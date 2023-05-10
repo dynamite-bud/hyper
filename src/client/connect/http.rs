@@ -362,7 +362,10 @@ impl Connection for TcpStream {
     fn connected(&self) -> Connected {
         let connected = Connected::new();
         if let (Ok(remote_addr), Ok(local_addr)) = (self.peer_addr(), self.local_addr()) {
-            connected.extra(HttpInfo { remote_addr, local_addr })
+            connected.extra(HttpInfo {
+                remote_addr,
+                local_addr,
+            })
         } else {
             connected
         }
@@ -630,6 +633,7 @@ fn connect(
         use std::os::unix::io::{FromRawFd, IntoRawFd};
         TcpSocket::from_raw_fd(socket.into_raw_fd())
     };
+
     #[cfg(windows)]
     let socket = unsafe {
         // Safety: `from_raw_socket` is only safe to call if ownership of the raw
@@ -638,6 +642,12 @@ fn connect(
         // it, so this is safe.
         use std::os::windows::io::{FromRawSocket, IntoRawSocket};
         TcpSocket::from_raw_socket(socket.into_raw_socket())
+    };
+
+    #[cfg(target_os = "wasi")]
+    let socket = unsafe {
+        use std::os::wasi::io::{FromRawFd, IntoRawFd};
+        TcpSocket::from_raw_fd(socket.into_raw_fd())
     };
 
     if config.reuse_address {

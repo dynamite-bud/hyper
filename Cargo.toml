@@ -9,14 +9,18 @@ repository = "https://github.com/hyperium/hyper"
 license = "MIT"
 authors = ["Sean McArthur <sean@seanmonstar.com>"]
 keywords = ["http", "hyper", "hyperium"]
-categories = ["network-programming", "web-programming::http-client", "web-programming::http-server"]
+categories = [
+    "network-programming",
+    "web-programming::http-client",
+    "web-programming::http-server",
+]
 edition = "2018"
 
 include = [
-  "Cargo.toml",
-  "LICENSE",
-  "src/**/*",
-  #"build.rs",
+    "Cargo.toml",
+    "LICENSE",
+    "src/**/*",
+    #"build.rs",
 ]
 
 [dependencies]
@@ -42,7 +46,9 @@ libc = { version = "0.2", optional = true }
 socket2 = { version = "0.4.7", optional = true, features = ["all"] }
 
 [dev-dependencies]
-futures-util = { version = "0.3", default-features = false, features = ["alloc"] }
+futures-util = { version = "0.3", default-features = false, features = [
+    "alloc",
+] }
 matches = "0.1"
 num_cpus = "1.0"
 pretty_env_logger = "0.4"
@@ -65,6 +71,9 @@ tokio-util = { version = "0.7", features = ["codec"] }
 tower = { version = "0.4", features = ["make", "util"] }
 url = "2.2"
 
+[patch.crates-io]
+tokio = { git = "https://github.com/john-sharratt/tokio.git", branch = "wasix-1.24.2", version = "1.24.2" }
+
 [target.'cfg(any(target_os = "linux", target_os = "macos"))'.dev-dependencies]
 pnet_datalink = "0.27.2"
 
@@ -73,14 +82,7 @@ pnet_datalink = "0.27.2"
 default = []
 
 # Easily turn it all on
-full = [
-    "client",
-    "http1",
-    "http2",
-    "server",
-    "stream",
-    "runtime",
-]
+full = ["client", "http1", "http2", "server", "stream", "runtime"]
 
 # HTTP versions
 http1 = []
@@ -94,17 +96,8 @@ server = []
 stream = []
 
 # Tokio support
-runtime = [
-    "tcp",
-    "tokio/rt",
-    "tokio/time",
-]
-tcp = [
-    "socket2",
-    "tokio/net",
-    "tokio/rt",
-    "tokio/time",
-]
+runtime = ["tcp", "tokio/rt", "tokio/time"]
+tcp = ["socket2", "tokio/net", "tokio/rt", "tokio/time"]
 
 # C-API support (currently unstable (no semver))
 ffi = ["libc"]
